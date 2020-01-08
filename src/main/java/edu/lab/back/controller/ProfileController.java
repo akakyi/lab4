@@ -8,7 +8,7 @@ import edu.lab.back.service.validator.ProfileValidator;
 import edu.lab.back.util.constants.UrlPatterns;
 import edu.lab.back.util.exception.InvalidPayloadException;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
 @RequestMapping(ProfileController.CONTROLLER_BASE_URL)
+@RequiredArgsConstructor
 public class ProfileController {
 
     public static final String CONTROLLER_BASE_URL = UrlPatterns.CRUD_BASE_URL + "/profile";
@@ -28,17 +28,8 @@ public class ProfileController {
     @NonNull
     private final ProfileService profileService;
 
-    @NotNull
+    @NonNull
     private final ProfileValidator profileValidator;
-
-    @Autowired
-    public ProfileController(
-        @NonNull final ProfileService profileService,
-        @NonNull final ProfileValidator profileValidator
-    ) {
-        this.profileService = profileService;
-        this.profileValidator = profileValidator;
-    }
 
     @RequestMapping(
         value = "/{id}",

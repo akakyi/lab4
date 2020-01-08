@@ -7,7 +7,7 @@ import edu.lab.back.service.validator.SchoolValidator;
 import edu.lab.back.util.constants.UrlPatterns;
 import edu.lab.back.util.exception.InvalidPayloadException;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,22 +17,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(SchoolController.CONTROLLER_BASE_URL)
+@RequiredArgsConstructor
 public class SchoolController {
 
     public final static String CONTROLLER_BASE_URL = UrlPatterns.CRUD_BASE_URL + "/school";
 
+    @NonNull
     private final SchoolService schoolService;
 
+    @NonNull
     private final SchoolValidator validator;
-
-    @Autowired
-    public SchoolController(
-        @NonNull final SchoolService schoolService,
-        @NonNull final SchoolValidator validator
-    ) {
-        this.schoolService = schoolService;
-        this.validator = validator;
-    }
 
     @RequestMapping(
         value = "/{id}",

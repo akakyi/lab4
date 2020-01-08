@@ -101,3 +101,8 @@ insert into profile (name, age, type_id, school_id, class_level) values
   ('Миша', 22, 1, 1, 11),
   ('Не Миша', 99, 2, 1, null),
   ('Таня', 22, 1, 2, 11);
+
+insert into change_type values
+  (1, 'create'),
+  (2, 'update'),
+  (3, 'delete');

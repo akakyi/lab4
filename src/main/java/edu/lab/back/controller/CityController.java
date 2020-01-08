@@ -8,7 +8,7 @@ import edu.lab.back.service.validator.CityValidator;
 import edu.lab.back.util.constants.UrlPatterns;
 import edu.lab.back.util.exception.InvalidPayloadException;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,19 +20,16 @@ import java.util.List;
 
 @RestController
 @RequestMapping(CityController.CONTROLLER_BASE_URL)
+@RequiredArgsConstructor
 public class CityController {
 
     public final static String CONTROLLER_BASE_URL = UrlPatterns.CRUD_BASE_URL + "/city";
 
+    @NonNull
     private final CityCrudService cityCrudService;
 
+    @NonNull
     private final CityValidator validator;
-
-    @Autowired
-    public CityController(@NonNull final CityCrudService cityCrudService, @NonNull final CityValidator validator) {
-        this.cityCrudService = cityCrudService;
-        this.validator = validator;
-    }
 
     @RequestMapping(
         value = "/{id}",

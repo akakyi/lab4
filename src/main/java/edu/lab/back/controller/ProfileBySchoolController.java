@@ -5,7 +5,7 @@ import edu.lab.back.dtoPojos.response.ProfilesResponsePojo;
 import edu.lab.back.service.crud.ProfileService;
 import edu.lab.back.util.exception.InvalidPayloadException;
 import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,14 +16,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/profiles_of_school")
+@RequiredArgsConstructor
 public class ProfileBySchoolController {
 
+    @NonNull
     private final ProfileService profileService;
-
-    @Autowired
-    public ProfileBySchoolController(@NonNull final ProfileService profileService) {
-        this.profileService = profileService;
-    }
 
     @RequestMapping(
         value = "/{id}",

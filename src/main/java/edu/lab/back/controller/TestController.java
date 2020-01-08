@@ -1,21 +1,27 @@
 package edu.lab.back.controller;
 
+import edu.lab.back.db.entity.ChangeLogEntity;
+import edu.lab.back.dtoPojos.db.json.ChangeOnField;
+import edu.lab.back.dtoPojos.db.json.ChangesOnTable;
 import edu.lab.back.dtoPojos.response.ErrorMessagePojo;
-import org.jboss.logging.Logger;
+import edu.lab.back.service.jms.JmsMessageSender;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 @RestController
 @RequestMapping(value = "/test")
+@RequiredArgsConstructor
 public class TestController {
+
+    @NonNull
+    private JmsMessageSender jmsMessageSender;
 
     @RequestMapping(
         value = "/{arg}",
@@ -34,24 +40,34 @@ public class TestController {
 ////        mapper.registerModule(Module);
 //
         ErrorMessagePojo res = new ErrorMessagePojo("test");
-//        final String resStr = mapper.writeValueAsString(res);
-        Logger log = Logger.getLogger("test");
+////        final String resStr = mapper.writeValueAsString(res);
+//        Logger log = Logger.getLogger("test");
+////        log.info(resStr);
+//
+//        final JAXBContext context = JAXBContext.newInstance(ErrorMessagePojo.class);
+//        final Marshaller marshaller = context.createMarshaller();
+//
+//        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+//        marshaller.setProperty("com.sun.xml.bind.xmlHeaders",
+//            "<?xml-stylesheet type='text/xsl' href='nameoffile.xsl' ?>");
+//
+//        final ByteArrayOutputStream os = new ByteArrayOutputStream();
+//        marshaller.marshal(res, os);
+//        final String resStr = new String(os.toByteArray());
+//        os.close();
+//
 //        log.info(resStr);
 
-        final JAXBContext context = JAXBContext.newInstance(ErrorMessagePojo.class);
-        final Marshaller marshaller = context.createMarshaller();
+        final ChangeOnField changeOnField = new ChangeOnField();
+        changeOnField.setFieldName("entityFullName");
+        changeOnField.setFieldNewValue(ChangeLogEntity.class.getCanonicalName());
 
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        marshaller.setProperty("com.sun.xml.bind.xmlHeaders",
-            "<?xml-stylesheet type='text/xsl' href='nameoffile.xsl' ?>");
+        final ChangesOnTable changesOnTable = new ChangesOnTable();
+        changesOnTable.addChange(changeOnField);
 
-        final ByteArrayOutputStream os = new ByteArrayOutputStream();
-        marshaller.marshal(res, os);
-        final String resStr = new String(os.toByteArray());
-        os.close();
+        this.jmsMessageSender.sendToChangeLog(changesOnTable);
 
-        log.info(resStr);
-
+        res.setMessage(changesOnTable.toString());
         return res;
     }
 

@@ -5,6 +5,7 @@ import edu.lab.back.dtoPojos.response.SchoolsResponsePojo;
 import edu.lab.back.service.crud.SchoolService;
 import edu.lab.back.util.exception.InvalidPayloadException;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,13 +16,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/school_of_city")
+@RequiredArgsConstructor
 public class SchoolByCityController {
 
+    @NonNull
     private final SchoolService schoolService;
-
-    public SchoolByCityController(@NonNull final SchoolService schoolService) {
-        this.schoolService = schoolService;
-    }
 
     @RequestMapping(
         value = "/{id}",

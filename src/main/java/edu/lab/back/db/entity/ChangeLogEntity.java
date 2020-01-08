@@ -1,6 +1,8 @@
 package edu.lab.back.db.entity;
 
 import edu.lab.back.dtoPojos.db.json.ChangesOnTable;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -8,6 +10,8 @@ import java.util.Date;
 
 @Entity
 @Table(name = "change_log")
+@Getter
+@Setter
 public class ChangeLogEntity {
 
     @Id
