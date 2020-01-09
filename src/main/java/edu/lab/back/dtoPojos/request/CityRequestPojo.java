@@ -3,11 +3,15 @@ package edu.lab.back.dtoPojos.request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.lab.back.db.entity.CityEntity;
 import edu.lab.back.dtoPojos.DTOPojo;
-import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@Setter
 @NoArgsConstructor
+@XmlRootElement(name = "city")
 public class CityRequestPojo implements DTOPojo {
 
     @JsonProperty(value = "id")
@@ -15,6 +19,16 @@ public class CityRequestPojo implements DTOPojo {
 
     @JsonProperty(value = "name")
     private String name;
+
+    @XmlElement(name = "id")
+    public Long getId() {
+        return id;
+    }
+
+    @XmlElement(name = "name")
+    public String getName() {
+        return name;
+    }
 
     public static CityRequestPojo convert(final CityEntity cityEntity) {
         if (cityEntity == null) {

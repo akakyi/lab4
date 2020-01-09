@@ -3,20 +3,25 @@ package edu.lab.back.service.crud.implementations;
 import edu.lab.back.db.entity.CityEntity;
 import edu.lab.back.db.entity.SchoolEntity;
 import edu.lab.back.db.repositories.SchoolRepository;
+import edu.lab.back.dtoPojos.db.json.ChangesOnTableJson;
 import edu.lab.back.dtoPojos.request.SchoolRequestPojo;
 import edu.lab.back.dtoPojos.response.SchoolResponsePojo;
 import edu.lab.back.service.crud.SchoolService;
+import edu.lab.back.service.jms.JmsMessageSender;
+import edu.lab.back.util.ChangeTypeEnum;
 import edu.lab.back.util.constants.ValidationMessages;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(rollbackOn = Exception.class)
 public class SchoolServiceImpl extends BaseCrudService<SchoolEntity, Long> implements SchoolService {
 
     @NonNull
@@ -24,6 +29,9 @@ public class SchoolServiceImpl extends BaseCrudService<SchoolEntity, Long> imple
 
     @NonNull
     private final ValidationMessages validationMessages;
+
+    @NonNull
+    private final JmsMessageSender jmsMessageSender;
 
     @Override
     protected SchoolRepository getRepo() {
@@ -57,6 +65,7 @@ public class SchoolServiceImpl extends BaseCrudService<SchoolEntity, Long> imple
         final SchoolEntity deletedEntity = this.deleteEntityById(id);
 
         final SchoolResponsePojo result = SchoolResponsePojo.convert(deletedEntity);
+        this.logChanges(deletedEntity, ChangeTypeEnum.DELETE);
         return result;
     }
 
@@ -73,6 +82,7 @@ public class SchoolServiceImpl extends BaseCrudService<SchoolEntity, Long> imple
 
         final SchoolEntity saved = this.schoolRepository.save(entity);
         final SchoolResponsePojo savedJson = SchoolResponsePojo.convert(saved);
+        this.logChanges(saved, ChangeTypeEnum.CREATE);
         return savedJson;
     }
 
@@ -89,6 +99,7 @@ public class SchoolServiceImpl extends BaseCrudService<SchoolEntity, Long> imple
 
         final SchoolEntity updated = this.schoolRepository.save(school);
         final SchoolResponsePojo updatedJson = SchoolResponsePojo.convert(updated);
+        this.logChanges(updated, ChangeTypeEnum.UPDATE);
         return updatedJson;
     }
 
@@ -100,5 +111,15 @@ public class SchoolServiceImpl extends BaseCrudService<SchoolEntity, Long> imple
             .collect(Collectors.toList());
 
         return result;
+    }
+
+    private void logChanges(final SchoolEntity entity, final ChangeTypeEnum type) {
+        final ChangesOnTableJson changes = new ChangesOnTableJson();
+        this.jmsMessageSender.sendToChangeLog(
+            changes.fillByEntity(entity),
+            SchoolEntity.class,
+            entity.getId(),
+            type
+        );
     }
 }

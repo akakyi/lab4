@@ -6,7 +6,7 @@ import edu.lab.back.util.exception.InvalidPayloadException;
 
 import java.util.List;
 
-public interface SchoolService extends BaseCrudService<SchoolRequestPojo, SchoolResponsePojo, Long> {
+public interface SchoolService extends BaseCrudComponent<SchoolRequestPojo, SchoolResponsePojo, Long> {
 
     List<SchoolResponsePojo> getSchoolsByCityId(Long cityId) throws InvalidPayloadException;
 

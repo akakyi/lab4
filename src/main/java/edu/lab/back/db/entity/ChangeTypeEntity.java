@@ -1,5 +1,6 @@
 package edu.lab.back.db.entity;
 
+import edu.lab.back.dtoPojos.ChangeTypePojo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,5 +19,17 @@ public class ChangeTypeEntity {
 
     @Column(name = "name")
     private String name;
+
+    public static ChangeTypeEntity convert(final ChangeTypePojo pojo) {
+        if (pojo == null) {
+            return null;
+        }
+
+        final ChangeTypeEntity result = new ChangeTypeEntity();
+        result.setId(pojo.getId());
+        result.setName(pojo.getName());
+
+        return result;
+    }
 
 }

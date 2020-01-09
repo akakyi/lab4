@@ -2,9 +2,12 @@ package edu.lab.back.service.crud.implementations;
 
 import edu.lab.back.db.entity.CityEntity;
 import edu.lab.back.db.repositories.CityRepository;
+import edu.lab.back.dtoPojos.db.json.ChangesOnTableJson;
 import edu.lab.back.dtoPojos.request.CityRequestPojo;
 import edu.lab.back.dtoPojos.response.CityResponsePojo;
 import edu.lab.back.service.crud.CityCrudService;
+import edu.lab.back.service.jms.JmsMessageSender;
+import edu.lab.back.util.ChangeTypeEnum;
 import edu.lab.back.util.constants.ValidationMessages;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +28,9 @@ public class CityCrudServiceImpl extends BaseCrudService<CityEntity, Long> imple
 
     @NonNull
     private final ValidationMessages validationMessages;
+
+    @NonNull
+    private final JmsMessageSender jmsMessageSender;
 
     @Override
     protected CityRepository getRepo() {
@@ -59,6 +65,7 @@ public class CityCrudServiceImpl extends BaseCrudService<CityEntity, Long> imple
         final CityEntity city = this.deleteEntityById(idString);
         final CityResponsePojo deletedJson = CityResponsePojo.convert(city);
 
+        this.logChanges(city, ChangeTypeEnum.DELETE);
         return deletedJson;
     }
 
@@ -69,6 +76,7 @@ public class CityCrudServiceImpl extends BaseCrudService<CityEntity, Long> imple
         final CityEntity saved = this.cityRepository.save(cityEntity);
         final CityResponsePojo result = CityResponsePojo.convert(saved);
 
+        this.logChanges(saved, ChangeTypeEnum.CREATE);
         return result;
     }
 
@@ -82,7 +90,18 @@ public class CityCrudServiceImpl extends BaseCrudService<CityEntity, Long> imple
         final CityEntity added = this.cityRepository.save(entity);
         final CityResponsePojo result = CityResponsePojo.convert(added);
 
+        this.logChanges(added, ChangeTypeEnum.UPDATE);
         return result;
+    }
+
+    private void logChanges(final CityEntity entity, final ChangeTypeEnum type) {
+        final ChangesOnTableJson changes = new ChangesOnTableJson();
+        this.jmsMessageSender.sendToChangeLog(
+            changes.fillByEntity(entity),
+            CityEntity.class,
+            entity.getId(),
+            type
+        );
     }
 
 }

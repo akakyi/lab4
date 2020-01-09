@@ -6,7 +6,7 @@ import edu.lab.back.util.exception.InvalidPayloadException;
 
 import java.util.List;
 
-public interface ProfileService extends BaseCrudService<ProfileRequestPojo, ProfileResponsePojo, Long> {
+public interface ProfileService extends BaseCrudComponent<ProfileRequestPojo, ProfileResponsePojo, Long> {
 
     List<ProfileResponsePojo> getProfileBySchoolId(Long schoolId) throws InvalidPayloadException;
 

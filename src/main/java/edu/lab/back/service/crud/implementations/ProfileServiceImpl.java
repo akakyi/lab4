@@ -5,21 +5,26 @@ import edu.lab.back.db.entity.ProfileTypeEntity;
 import edu.lab.back.db.entity.SchoolEntity;
 import edu.lab.back.db.repositories.ProfileRepository;
 import edu.lab.back.db.repositories.ProfileTypeRepository;
+import edu.lab.back.dtoPojos.db.json.ChangesOnTableJson;
 import edu.lab.back.dtoPojos.request.ProfileRequestPojo;
 import edu.lab.back.dtoPojos.response.ProfileResponsePojo;
 import edu.lab.back.service.crud.ProfileService;
+import edu.lab.back.service.jms.JmsMessageSender;
+import edu.lab.back.util.ChangeTypeEnum;
 import edu.lab.back.util.constants.ValidationMessages;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(rollbackOn = Exception.class)
 public class ProfileServiceImpl extends BaseCrudService<ProfileEntity, Long> implements ProfileService {
 
     @NonNull
@@ -30,6 +35,9 @@ public class ProfileServiceImpl extends BaseCrudService<ProfileEntity, Long> imp
 
     @NonNull
     private final ValidationMessages validationMessages;
+
+    @NonNull
+    private final JmsMessageSender jmsMessageSender;
 
     @Override
     protected ValidationMessages getValidationMessages() {
@@ -67,6 +75,7 @@ public class ProfileServiceImpl extends BaseCrudService<ProfileEntity, Long> imp
         final ProfileEntity deletedEntity = this.deleteEntityById(id);
 
         final ProfileResponsePojo result = ProfileResponsePojo.convert(deletedEntity);
+        this.logChanges(deletedEntity, ChangeTypeEnum.DELETE);
         return result;
     }
 
@@ -77,6 +86,7 @@ public class ProfileServiceImpl extends BaseCrudService<ProfileEntity, Long> imp
 
         final ProfileEntity saved = this.profileRepository.save(entity);
         final ProfileResponsePojo savedJson = ProfileResponsePojo.convert(saved);
+        this.logChanges(saved, ChangeTypeEnum.CREATE);
         return savedJson;
     }
 
@@ -87,6 +97,7 @@ public class ProfileServiceImpl extends BaseCrudService<ProfileEntity, Long> imp
 
         final ProfileEntity saved = this.profileRepository.save(entity);
         final ProfileResponsePojo savedJson = ProfileResponsePojo.convert(saved);
+        this.logChanges(saved, ChangeTypeEnum.UPDATE);
         return savedJson;
     }
 
@@ -113,5 +124,15 @@ public class ProfileServiceImpl extends BaseCrudService<ProfileEntity, Long> imp
         final String profileTypeName = profileJson.getProfileType().getName();
         final ProfileTypeEntity profileType = this.profileTypeRepository.getByName(profileTypeName);
         entity.setProfileType(profileType);
+    }
+
+    private void logChanges(final ProfileEntity entity, final ChangeTypeEnum type) {
+        final ChangesOnTableJson changes = new ChangesOnTableJson();
+        this.jmsMessageSender.sendToChangeLog(
+            changes.fillByEntity(entity),
+            ProfileEntity.class,
+            entity.getId(),
+            type
+        );
     }
 }

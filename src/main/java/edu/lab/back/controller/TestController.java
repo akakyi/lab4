@@ -1,8 +1,5 @@
 package edu.lab.back.controller;
 
-import edu.lab.back.db.entity.ChangeLogEntity;
-import edu.lab.back.dtoPojos.db.json.ChangeOnField;
-import edu.lab.back.dtoPojos.db.json.ChangesOnTable;
 import edu.lab.back.dtoPojos.response.ErrorMessagePojo;
 import edu.lab.back.service.jms.JmsMessageSender;
 import lombok.NonNull;
@@ -58,16 +55,16 @@ public class TestController {
 //
 //        log.info(resStr);
 
-        final ChangeOnField changeOnField = new ChangeOnField();
-        changeOnField.setFieldName("entityFullName");
-        changeOnField.setFieldNewValue(ChangeLogEntity.class.getCanonicalName());
-
-        final ChangesOnTable changesOnTable = new ChangesOnTable();
-        changesOnTable.addChange(changeOnField);
-
-        this.jmsMessageSender.sendToChangeLog(changesOnTable);
-
-        res.setMessage(changesOnTable.toString());
+//        final ChangeOnField changeOnField = new ChangeOnField();
+//        changeOnField.setFieldName("entityFullName");
+//        changeOnField.setFieldNewValue(ChangeLogEntity.class.getCanonicalName());
+//
+//        final ChangesOnTableJson changesOnTable = new ChangesOnTableJson();
+//        changesOnTable.addChange(changeOnField);
+//
+//        this.jmsMessageSender.sendToChangeLog(changesOnTable);
+//
+//        res.setMessage(changesOnTable.toString());
         return res;
     }
 

@@ -9,7 +9,10 @@ public class ChangeOnField {
     @JsonProperty(value = "field_name")
     private String fieldName;
 
+    /**
+     * Object такое себе, но я уже задолбался.
+     */
     @JsonProperty(value = "field_new_value")
-    private String fieldNewValue;
+    private Object fieldNewValue;
 
 }
