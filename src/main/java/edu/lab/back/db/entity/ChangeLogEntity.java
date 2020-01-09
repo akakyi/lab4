@@ -4,6 +4,7 @@ import edu.lab.back.dtoPojos.ChangeLogPojo;
 import edu.lab.back.dtoPojos.db.json.ChangesOnTableJson;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
@@ -21,6 +22,7 @@ import java.util.Date;
 @Table(name = "change_log")
 @Getter
 @Setter
+@ToString
 public class ChangeLogEntity {
 
     @Id

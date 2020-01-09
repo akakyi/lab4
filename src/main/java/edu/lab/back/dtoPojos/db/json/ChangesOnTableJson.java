@@ -72,7 +72,7 @@ public class ChangesOnTableJson {
 
         final ChangeOnField result = new ChangeOnField();
         result.setFieldName(fieldName);
-        result.setFieldNewValue(fieldValue);
+        result.setFieldNewValue(fieldValue.toString());
 
         return result;
     }

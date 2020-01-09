@@ -3,6 +3,7 @@ package edu.lab.back.db.entity;
 import edu.lab.back.dtoPojos.ProfileTypePojo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +17,7 @@ import javax.persistence.Table;
 @Table(name = ProfileTypeEntity.TABLE_NAME)
 @Data
 @NoArgsConstructor
+@ToString
 public class ProfileTypeEntity {
 
     public static final String TABLE_NAME = "profile_type";

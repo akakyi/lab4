@@ -3,6 +3,7 @@ package edu.lab.back.db.entity;
 import edu.lab.back.dtoPojos.ChangeTypePojo;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -10,6 +11,7 @@ import javax.persistence.*;
 @Table(name = "change_type")
 @Getter
 @Setter
+@ToString
 public class ChangeTypeEntity {
 
     @Id

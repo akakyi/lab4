@@ -13,6 +13,6 @@ public class ChangeOnField {
      * Object такое себе, но я уже задолбался.
      */
     @JsonProperty(value = "field_new_value")
-    private Object fieldNewValue;
+    private String fieldNewValue;
 
 }

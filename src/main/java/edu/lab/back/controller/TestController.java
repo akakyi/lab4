@@ -1,7 +1,7 @@
 package edu.lab.back.controller;
 
 import edu.lab.back.dtoPojos.response.ErrorMessagePojo;
-import edu.lab.back.service.jms.JmsMessageSender;
+import edu.lab.back.service.email.EmailComponent;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -18,7 +18,7 @@ import java.io.IOException;
 public class TestController {
 
     @NonNull
-    private JmsMessageSender jmsMessageSender;
+    private EmailComponent emailComponent;
 
     @RequestMapping(
         value = "/{arg}",
@@ -65,6 +65,9 @@ public class TestController {
 //        this.jmsMessageSender.sendToChangeLog(changesOnTable);
 //
 //        res.setMessage(changesOnTable.toString());
+
+        this.emailComponent.sendLogToMail("mhanlucky@gmail.com", "TEST", "This is message from Spring boot!!1!");
+
         return res;
     }
 

@@ -84,6 +84,17 @@ create table change_log
 
 comment on table change_log is 'История изменений в базе';
 
+create sequence change_log_emails_id_sequence;
+
+create table change_log_emails
+(
+  id bigint primary key default nextval('change_log_emails_id_sequence'),
+  desired_type_id smallint not null references change_type(id),
+  mail text not null
+);
+
+comment on table change_log is 'Адреса для нотификаций об изменениях';
+
 insert into city values
   (1, 'default city 1'),
   (2, 'default city 2');
