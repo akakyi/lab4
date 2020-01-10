@@ -45,7 +45,6 @@ public class JmsMessageSenderImpl implements JmsMessageSender {
         payload.setChangeType(type);
 
         this.jmsTemplate.convertAndSend(JmsChangeLogMessageHandler.DESTINATION_STR, payload);
-        this.jmsTemplate.convertAndSend(JmsChangeLogMessageHandler.MAIL_DESTINATION_STR, payload);
 
         return payload;
     }

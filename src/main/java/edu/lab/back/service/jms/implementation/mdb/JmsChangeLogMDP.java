@@ -17,9 +17,9 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class JmsChangeLogMDB implements JmsChangeLogMessageHandler {
+public class JmsChangeLogMDP implements JmsChangeLogMessageHandler {
 
-    private Logger log = LoggerFactory.getLogger(JmsChangeLogMDB.class);
+    private Logger log = LoggerFactory.getLogger(JmsChangeLogMDP.class);
 
     private final String MESSAGE_SUBJECT = "Changes!!!";
 
@@ -44,7 +44,7 @@ public class JmsChangeLogMDB implements JmsChangeLogMessageHandler {
         this.changeLogCrudComponent.save(changes);
     }
 
-    @JmsListener(destination = JmsChangeLogMessageHandler.MAIL_DESTINATION_STR)
+    @JmsListener(destination = JmsChangeLogMessageHandler.DESTINATION_STR)
     public void receiveMailChangeLog(final ChangeLogPojo changes) {
         final List<ChangeLogEmailDto> mails = this.changeLogEmailsCrudComponent.getAll();
 
